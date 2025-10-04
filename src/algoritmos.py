@@ -1,4 +1,4 @@
-
+from collections.abc import Callable
 from grafo import Grafo
 
 def eh_conexo(grafo: Grafo) -> bool:
@@ -112,7 +112,7 @@ def encontrar_pontes_tarjan(grafo: Grafo) -> list[tuple]:
     return pontes
 
 
-from collections.abc import Callable 
+ 
 
 
 
@@ -133,7 +133,7 @@ def encontrar_caminho_euleriano(grafo: Grafo, buscador_de_pontes: Callable[[Graf
     
     vertices_grau_impar = [v for v in grafo.get_vertices() if grafo.grau(v) % 2 != 0]
     
-    # Um grafo só pode ter um caminho Euleriano se tiver 0 ou 2 vértices de grau ímpar.
+    # um grafo só pode ter um caminho Euleriano se tiver 0 ou 2 vértices de grau ímpar.
     if len(vertices_grau_impar) not in [0, 2]:
         print("Não há caminho Euleriano: número de vértices de grau ímpar não é 0 ou 2.")
         return []
@@ -160,6 +160,7 @@ def encontrar_caminho_euleriano(grafo: Grafo, buscador_de_pontes: Callable[[Graf
 
     while g_copia.get_arestas():
         vizinhos = g_copia.vizinhos(vertice_atual)
+        if not vizinhos: break
         proximo_vertice = None
 
         if len(vizinhos) == 1:
