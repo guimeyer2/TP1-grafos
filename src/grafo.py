@@ -68,3 +68,11 @@ class Grafo:
     def vizinhos(self, u):
         
         return self._adj.get(u, [])
+
+
+    def copy(self):
+        
+        novo_grafo = Grafo()
+        # copia o dicionário de adjacência. 
+        novo_grafo._adj = {u: list(v) for u, v in self._adj.items()}
+        return novo_grafo

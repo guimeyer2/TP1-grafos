@@ -110,3 +110,81 @@ def encontrar_pontes_tarjan(grafo: Grafo) -> list[tuple]:
             _dfs_tarjan(vertice)
             
     return pontes
+
+
+from collections.abc import Callable 
+
+
+
+def encontrar_caminho_euleriano(grafo: Grafo, buscador_de_pontes: Callable[[Grafo], list[tuple]]) -> list:
+    """
+    Encontra um caminho ou ciclo Euleriano em um grafo usando o algoritmo de Fleury.
+
+    Argumentos:
+        grafo (Grafo): O grafo original.
+        buscador_de_pontes (Callable): A função a ser usada para encontrar pontes 
+                                     
+
+    Retorna:
+        list: Uma lista de vértices representando o caminho/ciclo Euleriano.
+              lista vazia se não houver caminho.
+    """
+    
+    
+    vertices_grau_impar = [v for v in grafo.get_vertices() if grafo.grau(v) % 2 != 0]
+    
+    # Um grafo só pode ter um caminho Euleriano se tiver 0 ou 2 vértices de grau ímpar.
+    if len(vertices_grau_impar) not in [0, 2]:
+        print("Não há caminho Euleriano: número de vértices de grau ímpar não é 0 ou 2.")
+        return []
+
+    if grafo.get_arestas() and not eh_conexo(grafo):
+        print("Não há caminho Euleriano: o grafo não é conexo.")
+        return []
+
+    
+    g_copia = grafo.copy()
+    
+    
+    if vertices_grau_impar:
+        vertice_atual = vertices_grau_impar[0] 
+    else:
+      
+        primeiro_vertice = next((v for v in g_copia.get_vertices() if g_copia.grau(v) > 0), None)
+        if primeiro_vertice is None: return [] 
+        vertice_atual = primeiro_vertice
+
+    caminho = [vertice_atual]
+    
+    
+
+    while g_copia.get_arestas():
+        vizinhos = g_copia.vizinhos(vertice_atual)
+        proximo_vertice = None
+
+        if len(vizinhos) == 1:
+           
+            proximo_vertice = vizinhos[0]
+        else:
+       
+            pontes_atuais = buscador_de_pontes(g_copia)
+          
+            pontes_normalizadas = {tuple(sorted(p)) for p in pontes_atuais}
+
+            
+            arestas_nao_ponte = [
+                v for v in vizinhos 
+                if tuple(sorted((vertice_atual, v))) not in pontes_normalizadas
+            ]
+
+            if arestas_nao_ponte:
+                proximo_vertice = arestas_nao_ponte[0]
+            else:
+                
+                proximo_vertice = vizinhos[0]
+
+        g_copia.remover_aresta(vertice_atual, proximo_vertice)
+        vertice_atual = proximo_vertice
+        caminho.append(vertice_atual)
+
+    return caminho
